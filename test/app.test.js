@@ -37,7 +37,11 @@ const get = (p, opts) => fetch(base + p, { redirect: 'manual', ...opts });
 test('home responde 200', async () => {
   const r = await get('/');
   assert.equal(r.status, 200);
-  assert.match(await r.text(), /No es un regalo/);
+  const html = await r.text();
+  assert.match(html, /No es un regalo/);
+  assert.match(html, /<video[^>]+muted[^>]+playsinline/); // sin muted/playsinline el celu no lo reproduce solo
+  const video = await get('/video/arke-hero.mp4', { headers: { range: 'bytes=0-99' } });
+  assert.equal(video.status, 206); // el servidor responde por partes: el navegador puede adelantar el video
 });
 
 test('listado y búsqueda sin tildes', async () => {

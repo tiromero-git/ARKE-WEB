@@ -47,6 +47,36 @@
     ir(0);
   }
 
+  // ── Video del hero ─────────────────────────────────────────
+  const video = $('[data-video-hero]');
+  const btnPausa = $('[data-video-pausa]');
+  if (video && btnPausa) {
+    let pausadoPorUsuario = false;
+    const mostrarEstado = () => {
+      btnPausa.textContent = video.paused ? '▶' : '❚❚';
+      btnPausa.setAttribute('aria-label', video.paused ? 'Reproducir video' : 'Pausar video');
+    };
+    video.addEventListener('play', mostrarEstado);
+    video.addEventListener('pause', mostrarEstado);
+    btnPausa.addEventListener('click', () => {
+      pausadoPorUsuario = !video.paused;
+      if (video.paused) video.play(); else video.pause();
+    });
+    // Respeta a quien pidió "reducir movimiento" en su sistema o "ahorro de datos" en el celu
+    const sinMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (sinMovimiento || navigator.connection?.saveData) {
+      pausadoPorUsuario = true;
+      video.removeAttribute('autoplay');
+      video.pause();
+    }
+    // Si el hero no está en pantalla (scrolleaste hacia abajo), pausamos: ahorra batería y CPU
+    new IntersectionObserver(([e]) => {
+      if (pausadoPorUsuario) return;
+      if (e.isIntersecting) video.play().catch(() => {}); else video.pause();
+    }).observe(video);
+    mostrarEstado();
+  }
+
   // ── Buscador predictivo (usa la API del backend) ───────────
   const buscador = $('[data-buscador]');
   if (buscador) {

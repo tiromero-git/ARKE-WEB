@@ -10,6 +10,28 @@ arriba de todo con la fecha. Los commits llevan un prefijo para saber de qué se
 
 ---
 
+## 2026-10-24 — Video en el hero de la home
+
+**Qué cambió.** El hero (la primera franja de la home) ahora tiene de fondo el video
+`public/video/arke-hero.mp4` (Full HD, 24 s, 3,8 MB): un mosaico de productos con logos que se
+mueve. Encima, las mismas 3 frases rotando. La grilla de íconos se sacó porque el video la reemplaza.
+
+**Cómo está armado** (por capas, de atrás hacia adelante):
+1. `<video autoplay muted loop playsinline>`: `muted` y `playsinline` son obligatorios para que
+   los celulares lo reproduzcan solos. `object-fit: cover` lo estira sin deformarlo.
+2. Un velo con degradé oscuro (`#2c2b26`, el color de texto de la marca) del lado del texto,
+   para que se lea; a la derecha casi transparente para que se vean los productos.
+3. Los textos en blanco, con la segunda línea en arena (el oliva no contrasta sobre fondo oscuro).
+4. Controles semitransparentes: flechas, puntos y un botón de pausa.
+
+**Detalles de funcionamiento** (en `public/js/app.js`):
+- Botón de pausa: cualquier animación de más de 5 segundos tiene que poder frenarse (accesibilidad).
+- Si el visitante tiene activado "reducir movimiento" o "ahorro de datos", el video no arranca solo.
+- Cuando scrolleás y el hero sale de pantalla, el video se pausa (ahorra batería); al volver, sigue.
+
+**Tests:** 11/11. El de la home ahora controla que el video tenga `muted`/`playsinline` y que el
+servidor lo entregue por partes (código 206), que es lo que permite adelantarlo.
+
 ## 2026-10-24 — Arreglos de seguridad y de URLs
 
 **Slugs de Waclis protegidos.** Al editar un producto o una categoría desde el panel, el slug
