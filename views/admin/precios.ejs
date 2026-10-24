@@ -1,0 +1,31 @@
+<%- include('_cabecera', { tituloAdmin: 'Precios' }) %>
+<h1>Actualización masiva de precios</h1>
+
+<div class="panel">
+  <h2 style="font-size:16px;margin-top:0">Aumentar o bajar por porcentaje</h2>
+  <p class="ayuda">Ej: <b>8</b> sube todo un 8%. <b>-5</b> baja un 5%. Podés limitarlo a una categoría.</p>
+  <form method="post" class="form-grid" onsubmit="return confirm('¿Aplicar el ajuste de precios?')">
+    <input type="hidden" name="accion" value="porcentaje">
+    <label>Porcentaje<input name="porcentaje" inputmode="decimal" required placeholder="Ej: 8"></label>
+    <label>Categoría
+      <select name="categoria"><option value="">Todos los productos</option>
+        <% categorias.forEach(function (c) { %><option value="<%= c.id %>"><%= c.nombre %></option>
+          <% c.hijas.forEach(function (h) { %><option value="<%= h.id %>">&nbsp;&nbsp;↳ <%= h.nombre %></option><% }) %>
+        <% }) %>
+      </select>
+    </label>
+    <div><button class="btn">Aplicar</button></div>
+  </form>
+</div>
+
+<div class="panel">
+  <h2 style="font-size:16px;margin-top:0">Recalcular precio = costo + margen</h2>
+  <p class="ayuda">Usa el costo del proveedor guardado en cada producto. El catálogo importado de Waclis tiene entre 15% y 20% sobre costo.
+    Tu fórmula de propuestas usa 32–35% (más el costo de personalización, que se cotiza aparte).</p>
+  <form method="post" class="form-grid" onsubmit="return confirm('Esto reemplaza el precio de todos los productos que tienen costo. ¿Seguir?')">
+    <input type="hidden" name="accion" value="margen">
+    <label>Margen %<input name="margen" inputmode="decimal" required value="<%= margen %>"></label>
+    <div style="align-self:end"><button class="btn">Recalcular</button></div>
+  </form>
+</div>
+<%- include('_pie') %>

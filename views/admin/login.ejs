@@ -1,0 +1,11 @@
+<%- include('_cabecera') %>
+<form class="login" method="post" action="/admin/login">
+  <img src="/img/logo.webp" alt="ARKE">
+  <h1 style="font-size:20px;text-align:center;margin:0">Panel de administración</h1>
+  <% if (error) { %><div class="flash error"><%= error %></div><% } %>
+  <input type="hidden" name="volver" value="<%= volver %>">
+  <label>Email<input type="email" name="email" required autofocus></label>
+  <label>Contraseña<input type="password" name="password" required></label>
+  <button class="btn" type="submit">Ingresar</button>
+</form>
+<%- include('_pie') %>

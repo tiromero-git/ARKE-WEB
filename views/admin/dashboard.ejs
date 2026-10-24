@@ -1,0 +1,27 @@
+<%- include('_cabecera', { tituloAdmin: 'Inicio' }) %>
+<h1>Hola<%= usuario.nombre ? ', ' + usuario.nombre : '' %> 👋</h1>
+<div class="kpis">
+  <div class="kpi"><b><%= stats.activos.toLocaleString('es-AR') %></b><span>Productos publicados</span></div>
+  <div class="kpi"><b><%= stats.productos.toLocaleString('es-AR') %></b><span>Productos en total</span></div>
+  <div class="kpi"><b><%= stats.destacados %></b><span>Destacados en la home</span></div>
+  <div class="kpi"><b><%= stats.sin_stock %></b><span>Sin stock</span></div>
+  <div class="kpi"><b><%= stats.categorias %></b><span>Categorías</span></div>
+  <div class="kpi"><b><%= stats.mensajes_nuevos %></b><span>Mensajes sin leer</span></div>
+</div>
+
+<% if (stats.imagenes_remotas > 0) { %>
+<div class="panel" style="border-left:4px solid var(--oliva)">
+  <b>📷 <%= stats.imagenes_remotas.toLocaleString('es-AR') %> imágenes todavía se cargan desde los servidores de Waclis.</b>
+  <p style="margin:6px 0 0">Antes de dar de baja Waclis, corré <code>npm run imagenes</code> para descargarlas a tu compu (carpeta <code>public/uploads</code>).</p>
+</div>
+<% } %>
+
+<div class="panel">
+  <h2 style="font-size:17px;margin-top:0">Últimos mensajes</h2>
+  <% if (!mensajes.length) { %><p class="ayuda">Todavía no llegaron mensajes del formulario de contacto.</p><% } %>
+  <% mensajes.forEach(function (m) { %>
+    <p><b><%= m.nombre %></b> — <%= m.email %> <span class="ayuda"><%= m.creado_en %></span><br><%= (m.mensaje || '').slice(0, 140) %></p>
+  <% }) %>
+  <a href="/admin/mensajes">Ver todos →</a>
+</div>
+<%- include('_pie') %>

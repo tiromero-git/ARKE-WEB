@@ -1,0 +1,68 @@
+/* Panel de administración ARKE */
+:root { --oliva: #8a7d3c; --oliva-osc: #6e6330; --crema: #f5f0e8; --arena: #e8dfc8; --texto: #2c2b26; --suave: #6b6455; --rojo: #b3261e; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'Segoe UI', system-ui, Arial, sans-serif; background: #f6f4ef; color: var(--texto); font-size: 15px; }
+a { color: var(--oliva); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.adm { display: grid; grid-template-columns: 230px 1fr; min-height: 100vh; }
+.adm-side { background: var(--texto); color: #eee; padding: 20px 14px; position: sticky; top: 0; height: 100vh; }
+.adm-side img { height: 36px; background: #fff; border-radius: 8px; padding: 4px 8px; margin-bottom: 18px; }
+.adm-side nav a { display: block; color: #ddd; padding: 9px 12px; border-radius: 8px; margin-bottom: 2px; }
+.adm-side nav a:hover, .adm-side nav a.activo { background: rgba(255,255,255,.1); color: #fff; text-decoration: none; }
+.adm-side .badge { background: var(--oliva); color: #fff; border-radius: 10px; padding: 0 7px; font-size: 12px; margin-left: 6px; }
+.adm-side form { margin-top: 18px; }
+.adm-main { padding: 26px 32px 60px; min-width: 0; }
+.adm-main h1 { font-size: 24px; margin: 0 0 18px; }
+.panel { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,.06); margin-bottom: 20px; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; margin-bottom: 20px; }
+.kpi { background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+.kpi b { display: block; font-size: 26px; }
+.kpi span { color: var(--suave); font-size: 13px; }
+.btn { display: inline-block; background: var(--oliva); color: #fff; border: 0; border-radius: 8px; padding: 9px 16px; cursor: pointer; font-size: 14px; font-weight: 600; }
+.btn:hover { background: var(--oliva-osc); text-decoration: none; }
+.btn-sec { background: #fff; color: var(--texto); border: 1px solid #d9d3c4; }
+.btn-sec:hover { background: var(--crema); }
+.btn-peligro { background: var(--rojo); }
+.btn-chico { padding: 5px 10px; font-size: 13px; }
+.link-btn { background: none; border: 0; color: #ddd; cursor: pointer; padding: 9px 12px; font: inherit; }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid #eee; vertical-align: middle; }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: .5px; color: var(--suave); }
+td img { width: 48px; height: 48px; object-fit: contain; background: #fff; border: 1px solid #eee; border-radius: 6px; }
+.num { text-align: right; white-space: nowrap; }
+.inactivo { opacity: .5; }
+.filtros { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+input, select, textarea { font: inherit; border: 1px solid #d9d3c4; border-radius: 8px; padding: 9px 11px; background: #fff; width: 100%; }
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--arena); border-color: var(--oliva); }
+input[type=checkbox] { width: auto; }
+.filtros input, .filtros select { width: auto; min-width: 200px; }
+.form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 18px; }
+.form-grid .ancho { grid-column: 1 / -1; }
+label { display: grid; gap: 5px; font-weight: 600; font-size: 13px; }
+label.check { display: flex; align-items: center; gap: 8px; }
+.ayuda { font-weight: 400; color: var(--suave); font-size: 12px; }
+textarea { min-height: 120px; font-family: Consolas, monospace; font-size: 13px; }
+.cats-check { max-height: 280px; overflow: auto; border: 1px solid #eee; border-radius: 8px; padding: 10px; columns: 2; }
+.cats-check label { font-weight: 400; display: flex; gap: 6px; break-inside: avoid; }
+.cats-check .hija { padding-left: 18px; }
+.flash { padding: 12px 16px; border-radius: 10px; margin-bottom: 16px; background: #e6f4ea; color: #1d6b36; }
+.flash.error { background: #fdecea; color: #a12622; }
+.paginacion { display: flex; gap: 6px; margin-top: 14px; flex-wrap: wrap; }
+.paginacion a, .paginacion span { padding: 6px 11px; border: 1px solid #ddd; border-radius: 6px; }
+.paginacion .actual { background: var(--oliva); color: #fff; border-color: var(--oliva); }
+.preview-imgs { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.preview-imgs img { width: 64px; height: 64px; object-fit: contain; border: 1px solid #eee; border-radius: 6px; background: #fff; }
+.login { max-width: 380px; margin: 10vh auto; background: #fff; padding: 30px; border-radius: 14px; box-shadow: 0 6px 30px rgba(0,0,0,.08); display: grid; gap: 14px; }
+.login img { height: 46px; justify-self: center; }
+td.acciones { white-space: nowrap; display: table-cell; }
+td.acciones > * { display: inline-block; margin: 2px; }
+.acciones { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; background: var(--crema); color: var(--oliva-osc); font-weight: 700; }
+@media (max-width: 800px) {
+  .adm { grid-template-columns: 1fr; }
+  .adm-side { position: static; height: auto; }
+  .adm-side nav { display: flex; flex-wrap: wrap; gap: 4px; }
+  .adm-main { padding: 18px 14px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .tabla-scroll { overflow-x: auto; }
+}

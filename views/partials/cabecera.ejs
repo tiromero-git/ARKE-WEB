@@ -1,0 +1,82 @@
+<%
+  // Título y descripción de la página (SEO)
+  const tituloPagina = (seo && seo.titulo) || titulo;
+  const tituloFinal = tituloPagina ? `${tituloPagina} | ${cfg.nombre_sitio}` : cfg.titulo_sitio;
+  const descripcionFinal = (seo && seo.descripcion) || cfg.descripcion_sitio;
+  const imagenOg = (seo && seo.imagen) || '/img/logo.webp';
+  const absoluta = (u) => (u && u.startsWith('http') ? u : siteUrl + u);
+%><!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= tituloFinal %></title>
+  <meta name="description" content="<%= descripcionFinal %>">
+  <link rel="canonical" href="<%= siteUrl + rutaActual %>">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="<%= tituloFinal %>">
+  <meta property="og:description" content="<%= descripcionFinal %>">
+  <meta property="og:image" content="<%= absoluta(imagenOg) %>">
+  <meta property="og:url" content="<%= siteUrl + rutaActual %>">
+  <% if (cfg.google_site_verification) { %><meta name="google-site-verification" content="<%= cfg.google_site_verification %>"><% } %>
+  <link rel="icon" href="/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+  <% if (cfg.google_analytics_id) { %>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=<%= cfg.google_analytics_id %>"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','<%= cfg.google_analytics_id %>');</script>
+  <% } %>
+  <% if (cfg.meta_pixel_id) { %>
+  <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','<%= cfg.meta_pixel_id %>');fbq('track','PageView');</script>
+  <% } %>
+</head>
+<body>
+<%- include('iconos') %>
+
+<div class="topbar">
+  <div class="contenedor">
+    <a href="https://wa.me/<%= cfg.whatsapp %>" target="_blank" rel="noopener"><svg><use href="#i-wpp"/></svg><%= cfg.whatsapp %></a>
+    <a href="tel:<%= cfg.telefono %>"><svg><use href="#i-tel"/></svg><%= cfg.telefono %></a>
+    <% if (cfg.instagram) { %><a href="<%= cfg.instagram %>" target="_blank" rel="noopener" aria-label="Instagram"><svg><use href="#i-ig"/></svg></a><% } %>
+    <% if (cfg.linkedin) { %><a href="<%= cfg.linkedin %>" target="_blank" rel="noopener" aria-label="LinkedIn"><svg><use href="#i-in"/></svg></a><% } %>
+  </div>
+</div>
+
+<header class="header">
+  <div class="contenedor">
+    <a href="/" class="logo" aria-label="Inicio"><img src="/img/logo.webp" alt="<%= cfg.nombre_sitio %>" width="101" height="46"></a>
+
+    <button class="menu-toggle" aria-label="Abrir menú" data-menu-toggle><span></span><span></span><span></span></button>
+
+    <nav class="nav" data-nav>
+      <a href="/" class="<%= pagina === 'home' ? 'activo' : '' %>">Home</a>
+      <div class="nav-item" data-nav-item>
+        <a href="/productos" class="<%= pagina === 'productos' || pagina === 'producto' ? 'activo' : '' %>">Productos ▾</a>
+        <div class="megamenu">
+          <% categoriasMenu.forEach(function (c) { %>
+            <div class="grupo">
+              <a href="<%= urlCategoria(c) %>"><%= c.nombre %></a>
+              <% if (c.hijas.length) { %>
+                <ul>
+                  <% c.hijas.forEach(function (h) { %><li><a href="<%= urlCategoria(h, c) %>"><%= h.nombre %></a></li><% }) %>
+                </ul>
+              <% } %>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+      <a href="/proceso-de-compra" class="<%= pagina === 'proceso' ? 'activo' : '' %>">Proceso de compra</a>
+      <a href="/contacto" class="<%= pagina === 'contacto' ? 'activo' : '' %>">Contacto</a>
+    </nav>
+
+    <form class="buscador" action="/productos" method="get" role="search" data-buscador>
+      <label class="sr-only" for="q">Buscar productos</label>
+      <input id="q" type="search" name="q" placeholder="Buscar productos..." autocomplete="off" value="<%= query.q || '' %>">
+      <button type="submit" aria-label="Buscar"><svg><use href="#i-buscar"/></svg></button>
+      <div class="sugerencias" data-sugerencias></div>
+    </form>
+  </div>
+</header>
+<main>

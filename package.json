@@ -1,0 +1,21 @@
+{
+  "name": "arke-web",
+  "version": "1.0.0",
+  "description": "Sitio web propio de ARKE Agency (catálogo de merchandising) — front + backend",
+  "main": "src/server.js",
+  "type": "commonjs",
+  "engines": { "node": ">=22.13" },
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning src/server.js",
+    "dev": "node --disable-warning=ExperimentalWarning --watch src/server.js",
+    "importar": "node --disable-warning=ExperimentalWarning scripts/importar-datos.js",
+    "imagenes": "node --disable-warning=ExperimentalWarning scripts/descargar-imagenes.js",
+    "crear-admin": "node --disable-warning=ExperimentalWarning scripts/crear-admin.js",
+    "test": "node --disable-warning=ExperimentalWarning --test test/app.test.js"
+  },
+  "dependencies": {
+    "cookie-session": "^2.1.1",
+    "ejs": "^3.1.10",
+    "express": "^5.2.1"
+  }
+}

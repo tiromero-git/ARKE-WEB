@@ -1,0 +1,112 @@
+<%- include('partials/cabecera') %>
+<% const p = producto; const urlAbs = siteUrl + urlProducto(p); %>
+<div class="contenedor">
+  <nav class="migas" aria-label="Ubicación">
+    <a href="/">Home</a><span>›</span><a href="/productos">Productos</a>
+    <% if (categoria && categoria.padre) { %><span>›</span><a href="<%= urlCategoria(categoria.padre) %>"><%= categoria.padre.nombre %></a><% } %>
+    <% if (categoria) { %><span>›</span><a href="<%= categoria.url %>"><%= categoria.nombre %></a><% } %>
+  </nav>
+
+  <div class="ficha" data-ficha
+       data-nombre="<%= p.nombre %>" data-codigo="<%= p.codigo || '' %>" data-url="<%= urlAbs %>"
+       data-whatsapp="<%= cfg.whatsapp %>" data-minimo="<%= p.cantidad_minima || 1 %>">
+
+    <%# Galería %>
+    <div>
+      <div class="galeria-principal" data-galeria-principal>
+        <% if (p.imagenes.length) { %>
+          <img src="<%= p.imagenes[0].url %>" alt="<%= p.nombre %>" data-img-principal>
+        <% } else { %><span class="sin-img">Sin imagen</span><% } %>
+      </div>
+      <% if (p.imagenes.length > 1) { %>
+        <div class="miniaturas" data-miniaturas>
+          <% p.imagenes.forEach(function (img, i) { %>
+            <button type="button" class="<%= i === 0 ? 'activo' : '' %>" data-idx="<%= i %>" data-src="<%= img.url %>" aria-label="Imagen <%= i + 1 %>">
+              <img src="<%= img.url %>" alt="" loading="lazy">
+            </button>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+
+    <%# Información %>
+    <div class="ficha-info">
+      <h1><%= p.nombre %></h1>
+      <% if (cfg.mostrar_precios === '1' && p.precio > 0) { %>
+        <div class="ficha-precio"><%= fmt.precio(p.precio) %></div>
+        <div class="ficha-nota">Precio unitario de referencia. El valor final depende de la cantidad y la personalización.</div>
+      <% } %>
+      <% if (p.codigo) { %><p class="ficha-codigo">Código: <%= p.codigo %></p><% } %>
+
+      <% if (p.variantes.length) { %>
+        <div class="ficha-bloque">
+          <span class="etiqueta">Color: <span data-color-elegido style="text-transform:none;font-weight:400"><%= p.variantes[0].valor %></span></span>
+          <div class="colores" role="radiogroup">
+            <% p.variantes.forEach(function (v, i) { %>
+              <button type="button" class="color <%= i === 0 ? 'activo' : '' %> <%= v.stock <= 0 ? 'sin-stock' : '' %>" role="radio" aria-checked="<%= i === 0 %>"
+                      data-color="<%= v.valor %>" data-stock="<%= v.stock %>" data-img-idx="<%= imagenPorVariante[v.valor] ?? '' %>">
+                <span class="muestra" style="background:<%= v.color_hex || '#ddd' %>"></span><%= v.valor %>
+                <% if (cfg.mostrar_stock === '1') { %><small>(<%= Number(v.stock).toLocaleString('es-AR') %>)</small><% } %>
+              </button>
+            <% }) %>
+          </div>
+        </div>
+      <% } %>
+
+      <% if (cfg.mostrar_stock === '1') { %>
+        <div class="ficha-bloque stock-box">
+          <div>Stock disponible<strong data-stock-visible><%= Number(p.variantes.length ? p.variantes[0].stock : p.stock).toLocaleString('es-AR') %></strong></div>
+          <% if (p.cantidad_minima > 1) { %><div>Cantidad mínima<strong><%= p.cantidad_minima %> u.</strong></div><% } %>
+        </div>
+      <% } %>
+
+      <div class="ficha-bloque">
+        <label for="cantidad">Cantidad</label>
+        <div class="cantidad">
+          <button type="button" data-menos aria-label="Restar">−</button>
+          <input id="cantidad" type="number" min="1" value="<%= Math.max(1, p.cantidad_minima || 1) %>" data-cantidad>
+          <button type="button" data-mas aria-label="Sumar">+</button>
+        </div>
+      </div>
+
+      <div class="acciones-ficha">
+        <a class="btn btn-wpp btn-bloque" href="#" target="_blank" rel="noopener" data-consultar-wpp>
+          <svg style="width:18px;height:18px;fill:#fff"><use href="#i-wpp"/></svg> Consultar por WhatsApp
+        </a>
+        <a class="btn btn-borde btn-bloque" href="/contacto">Prefiero que me contacten</a>
+      </div>
+    </div>
+  </div>
+
+  <% if (p.descripcion || p.ficha_tecnica) { %>
+    <section class="descripcion">
+      <% if (p.descripcion) { %><h2>Descripción</h2><div class="texto"><%- p.descripcion %></div><% } %>
+      <% if (p.ficha_tecnica) { %><h2 style="margin-top:22px">Ficha técnica</h2><div class="texto"><%- p.ficha_tecnica %></div><% } %>
+    </section>
+  <% } %>
+
+  <% if (relacionados.length) { %>
+    <section style="margin-bottom:56px">
+      <div class="titulo-seccion"><h2>También te puede interesar</h2><span class="linea"></span></div>
+      <div class="grilla-productos">
+        <% relacionados.slice(0, 4).forEach(function (r) { %><%- include('partials/card', { p: r }) %><% }) %>
+      </div>
+    </section>
+  <% } %>
+</div>
+
+<div class="lightbox" data-lightbox aria-hidden="true">
+  <button class="cerrar" data-lb-cerrar aria-label="Cerrar">×</button>
+  <button class="ant" data-lb-ant aria-label="Anterior">‹</button>
+  <img src="" alt="" data-lb-img>
+  <button class="sig" data-lb-sig aria-label="Siguiente">›</button>
+</div>
+
+<script type="application/ld+json"><%- JSON.stringify({
+  '@context': 'https://schema.org', '@type': 'Product', name: p.nombre, sku: p.codigo || undefined,
+  image: p.imagenes.slice(0, 5).map(i => i.url.startsWith('http') ? i.url : siteUrl + i.url),
+  description: fmt.sinHtml(p.descripcion).slice(0, 500),
+  offers: cfg.mostrar_precios === '1' ? { '@type': 'Offer', priceCurrency: 'ARS', price: p.precio, availability: p.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock', url: urlAbs } : undefined
+}).replace(/</g, '\\u003c') %></script>
+
+<%- include('partials/pie') %>

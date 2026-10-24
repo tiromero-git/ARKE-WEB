@@ -1,0 +1,61 @@
+<%- include('_cabecera', { tituloAdmin: 'Productos' }) %>
+<div class="acciones" style="justify-content:space-between;margin-bottom:14px">
+  <h1 style="margin:0">Productos <span class="ayuda">(<%= r.total.toLocaleString('es-AR') %>)</span></h1>
+  <a class="btn" href="/admin/productos/nuevo">+ Nuevo producto</a>
+</div>
+
+<form class="filtros" method="get">
+  <input name="q" placeholder="Buscar por nombre o código" value="<%= q %>">
+  <select name="categoria">
+    <option value="">Todas las categorías</option>
+    <% categorias.forEach(function (c) { %>
+      <option value="<%= c.id %>" <%= String(c.id) === categoria ? 'selected' : '' %>><%= c.nombre %></option>
+      <% c.hijas.forEach(function (h) { %><option value="<%= h.id %>" <%= String(h.id) === categoria ? 'selected' : '' %>>&nbsp;&nbsp;↳ <%= h.nombre %></option><% }) %>
+    <% }) %>
+  </select>
+  <button class="btn btn-sec">Buscar</button>
+</form>
+
+<div class="panel tabla-scroll" style="padding:8px 12px">
+  <table>
+    <thead><tr><th></th><th>Producto</th><th>Código</th><th class="num">Costo</th><th class="num">Precio</th><th class="num">Margen</th><th class="num">Stock</th><th>Destacado</th><th></th></tr></thead>
+    <tbody>
+      <% r.items.forEach(function (p) {
+           const margen = p.costo ? ((p.precio / p.costo - 1) * 100).toFixed(0) + '%' : '—'; %>
+        <tr class="<%= p.activo ? '' : 'inactivo' %>">
+          <td><% if (p.imagen) { %><img src="<%= p.imagen %>" alt="" loading="lazy"><% } %></td>
+          <td><a href="/admin/productos/<%= p.id %>"><%= p.nombre %></a><% if (!p.activo) { %> <span class="tag">oculto</span><% } %><% if (p.proveedor) { %> <span class="tag"><%= p.proveedor %></span><% } %></td>
+          <td><%= p.codigo || '' %></td>
+          <td class="num"><%= p.costo ? fmt.precio(p.costo) : '—' %></td>
+          <td class="num"><b><%= fmt.precio(p.precio) %></b></td>
+          <td class="num"><%= margen %></td>
+          <td class="num"><%= Number(p.stock).toLocaleString('es-AR') %></td>
+          <td>
+            <form method="post" action="/admin/productos/<%= p.id %>/destacado">
+              <input type="hidden" name="valor" value="<%= p.destacado ? '0' : '1' %>">
+              <button class="btn btn-chico <%= p.destacado ? '' : 'btn-sec' %>" title="Mostrar en la home"><%= p.destacado ? '★ Sí' : '☆ No' %></button>
+            </form>
+          </td>
+          <td class="acciones">
+            <a class="btn btn-sec btn-chico" href="/admin/productos/<%= p.id %>">Editar</a>
+            <a class="btn btn-sec btn-chico" href="<%= urlProducto(p) %>" target="_blank">Ver</a>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<% if (r.paginas > 1) {
+     const link = (n) => '?' + new URLSearchParams({ q, categoria, pagina: n }).toString();
+     const desde = Math.max(1, r.pagina - 3), hasta = Math.min(r.paginas, r.pagina + 3); %>
+  <div class="paginacion">
+    <% if (r.pagina > 1) { %><a href="<%= link(r.pagina - 1) %>">‹</a><% } %>
+    <% for (let i = desde; i <= hasta; i++) { %>
+      <% if (i === r.pagina) { %><span class="actual"><%= i %></span><% } else { %><a href="<%= link(i) %>"><%= i %></a><% } %>
+    <% } %>
+    <% if (r.pagina < r.paginas) { %><a href="<%= link(r.pagina + 1) %>">›</a><% } %>
+    <span class="ayuda">de <%= r.paginas %></span>
+  </div>
+<% } %>
+<%- include('_pie') %>

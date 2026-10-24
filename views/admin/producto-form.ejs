@@ -1,0 +1,81 @@
+<%- include('_cabecera', { tituloAdmin: p.id ? 'Editar producto' : 'Nuevo producto' }) %>
+<%
+  const catIds = (p.categorias || []).map(c => Number(c.id));
+  const variantesTxt = (p.variantes || []).map(v => [v.valor, v.color_hex || '', v.stock].join(' | ')).join('\n');
+  const imagenesTxt = (p.imagenes || []).map(i => i.url).join('\n');
+%>
+<div class="acciones" style="justify-content:space-between;margin-bottom:14px">
+  <h1 style="margin:0"><%= p.id ? 'Editar: ' + p.nombre : 'Nuevo producto' %></h1>
+  <% if (p.id) { %><a class="btn btn-sec" href="<%= urlProducto(p) %>" target="_blank">Ver en el sitio ↗</a><% } %>
+</div>
+<% if (error) { %><div class="flash error"><%= error %></div><% } %>
+
+<form method="post" action="/admin/productos/guardar">
+  <input type="hidden" name="id" value="<%= p.id || '' %>">
+  <div class="panel form-grid">
+    <label class="ancho">Nombre *<input name="nombre" required value="<%= p.nombre %>"></label>
+    <label>Código (proveedor)<input name="codigo" value="<%= p.codigo || '' %>"></label>
+    <label>Proveedor<input name="proveedor" list="proveedores" value="<%= p.proveedor || '' %>">
+      <datalist id="proveedores"><option value="zecat"><option value="cdo"><option value="promoproductos"><option value="stocksur"><option value="propio"></datalist>
+    </label>
+    <label>Costo <span class="ayuda">(solo lo ves vos, nunca se muestra en el sitio)</span><input name="costo" inputmode="decimal" value="<%= p.costo ?? '' %>" data-costo></label>
+    <label>Precio de venta *<input name="precio" inputmode="decimal" required value="<%= p.precio %>" data-precio>
+      <span class="ayuda" data-margen></span></label>
+    <label>Stock <span class="ayuda">(si cargás colores, se suma solo)</span><input type="number" name="stock" value="<%= p.stock %>"></label>
+    <label>Cantidad mínima<input type="number" name="cantidad_minima" min="1" value="<%= p.cantidad_minima %>"></label>
+    <label class="check"><input type="checkbox" name="activo" value="1" <%= p.activo ? 'checked' : '' %>> Publicado (visible en el sitio)</label>
+    <label class="check"><input type="checkbox" name="destacado" value="1" <%= p.destacado ? 'checked' : '' %>> Destacado en la home</label>
+  </div>
+
+  <div class="panel form-grid">
+    <label class="ancho">Descripción <span class="ayuda">(se permite HTML simple: &lt;br&gt;, &lt;b&gt;, &lt;ul&gt;&lt;li&gt;)</span>
+      <textarea name="descripcion" rows="7"><%= p.descripcion || '' %></textarea></label>
+    <label class="ancho">Ficha técnica (opcional)<textarea name="ficha_tecnica" rows="4"><%= p.ficha_tecnica || '' %></textarea></label>
+  </div>
+
+  <div class="panel form-grid">
+    <label class="ancho">Imágenes <span class="ayuda">(una URL o ruta por línea; la primera es la principal)</span>
+      <textarea name="imagenes" rows="6" data-imagenes><%= imagenesTxt %></textarea>
+      <div class="preview-imgs" data-preview></div>
+    </label>
+    <label class="ancho">Colores / variantes <span class="ayuda">(una por línea: <code>Nombre | #color | stock</code>, ej: <code>Negro | #000000 | 1500</code>)</span>
+      <textarea name="variantes" rows="5"><%= variantesTxt %></textarea></label>
+  </div>
+
+  <div class="panel">
+    <b>Categorías</b>
+    <div class="cats-check" style="margin-top:10px">
+      <% categorias.forEach(function (c) { %>
+        <label><input type="checkbox" name="categorias" value="<%= c.id %>" <%= catIds.includes(c.id) ? 'checked' : '' %>> <b><%= c.nombre %></b></label>
+        <% c.hijas.forEach(function (h) { %>
+          <label class="hija"><input type="checkbox" name="categorias" value="<%= h.id %>" <%= catIds.includes(h.id) ? 'checked' : '' %>> <%= h.nombre %></label>
+        <% }) %>
+      <% }) %>
+    </div>
+  </div>
+
+  <div class="acciones">
+    <button class="btn" type="submit">Guardar</button>
+    <a class="btn btn-sec" href="/admin/productos">Volver</a>
+  </div>
+</form>
+
+<% if (p.id) { %>
+  <form method="post" action="/admin/productos/<%= p.id %>/eliminar" style="margin-top:30px" onsubmit="return confirm('¿Eliminar este producto? No se puede deshacer.')">
+    <button class="btn btn-peligro btn-chico">Eliminar producto</button>
+    <span class="ayuda">Si solo querés ocultarlo, destildá "Publicado".</span>
+  </form>
+<% } %>
+
+<script>
+  // Vista previa de imágenes y cálculo de margen en vivo
+  (function () {
+    const ta = document.querySelector('[data-imagenes]'), prev = document.querySelector('[data-preview]');
+    const pintar = () => { prev.innerHTML = ''; ta.value.split('\n').map(s => s.trim()).filter(Boolean).slice(0, 12).forEach(u => { const i = document.createElement('img'); i.src = u; i.loading = 'lazy'; prev.appendChild(i); }); };
+    ta.addEventListener('input', pintar); pintar();
+    const c = document.querySelector('[data-costo]'), p = document.querySelector('[data-precio]'), m = document.querySelector('[data-margen]');
+    const calc = () => { const cv = parseFloat(String(c.value).replace(',', '.')), pv = parseFloat(String(p.value).replace(',', '.')); m.textContent = cv > 0 && pv > 0 ? 'Margen sobre costo: ' + ((pv / cv - 1) * 100).toFixed(1) + '%' : ''; };
+    c.addEventListener('input', calc); p.addEventListener('input', calc); calc();
+  })();
+</script>
+<%- include('_pie') %>

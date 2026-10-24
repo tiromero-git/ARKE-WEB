@@ -1,0 +1,30 @@
+<%- include('_cabecera', { tituloAdmin: 'Configuración' }) %>
+<h1>Configuración del sitio</h1>
+<form method="post">
+  <div class="panel form-grid">
+    <h2 class="ancho" style="font-size:16px;margin:0">Contacto</h2>
+    <label>WhatsApp <span class="ayuda">(con código de país, sin + ni espacios)</span><input name="whatsapp" value="<%= c.whatsapp %>"></label>
+    <label>Teléfono<input name="telefono" value="<%= c.telefono %>"></label>
+    <label>Email<input name="email" value="<%= c.email %>"></label>
+    <label>Instagram (URL)<input name="instagram" value="<%= c.instagram %>"></label>
+    <label>LinkedIn (URL)<input name="linkedin" value="<%= c.linkedin %>"></label>
+    <label class="ancho">Mensaje inicial de WhatsApp<input name="mensaje_whatsapp" value="<%= c.mensaje_whatsapp %>"></label>
+  </div>
+  <div class="panel form-grid">
+    <h2 class="ancho" style="font-size:16px;margin:0">Sitio</h2>
+    <label>Nombre corto<input name="nombre_sitio" value="<%= c.nombre_sitio %>"></label>
+    <label>Título (Google)<input name="titulo_sitio" value="<%= c.titulo_sitio %>"></label>
+    <label class="ancho">Descripción (Google)<input name="descripcion_sitio" value="<%= c.descripcion_sitio %>"></label>
+    <label class="check"><input type="checkbox" name="mostrar_precios" value="1" <%= c.mostrar_precios === '1' ? 'checked' : '' %>> Mostrar precios</label>
+    <label class="check"><input type="checkbox" name="mostrar_stock" value="1" <%= c.mostrar_stock === '1' ? 'checked' : '' %>> Mostrar stock</label>
+    <label>Margen sugerido %<input name="margen_sugerido" value="<%= c.margen_sugerido %>"></label>
+  </div>
+  <div class="panel form-grid">
+    <h2 class="ancho" style="font-size:16px;margin:0">Medición (opcional)</h2>
+    <label>Google Analytics ID <span class="ayuda">(ej: G-ABC123)</span><input name="google_analytics_id" value="<%= c.google_analytics_id %>"></label>
+    <label>Meta Pixel ID<input name="meta_pixel_id" value="<%= c.meta_pixel_id %>"></label>
+    <label class="ancho">Google Search Console (código de verificación)<input name="google_site_verification" value="<%= c.google_site_verification %>"></label>
+  </div>
+  <button class="btn">Guardar configuración</button>
+</form>
+<%- include('_pie') %>

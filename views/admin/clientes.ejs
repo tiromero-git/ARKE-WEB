@@ -1,0 +1,21 @@
+<%- include('_cabecera', { tituloAdmin: 'Clientes' }) %>
+<h1>Nuestros clientes (logos en la home)</h1>
+<div class="panel">
+  <form method="post" class="form-grid">
+    <label>Nombre *<input name="nombre" required></label>
+    <label>Logo * <span class="ayuda">(URL o ruta, ej: /uploads/clientes/acme.png)</span><input name="logo" required></label>
+    <label>Orden<input type="number" name="orden" value="0"></label>
+    <div style="align-self:end"><button class="btn">Agregar</button></div>
+  </form>
+  <p class="ayuda">Tip: copiá los logos a la carpeta <code>public/uploads/clientes/</code> del proyecto y usá la ruta <code>/uploads/clientes/archivo.png</code>.</p>
+</div>
+<div class="panel">
+  <% if (!clientes.length) { %><p class="ayuda">Sin clientes cargados: la sección no se muestra en la home.</p><% } %>
+  <table><tbody>
+    <% clientes.forEach(function (c) { %>
+      <tr><td><img src="<%= c.logo %>" alt=""></td><td><%= c.nombre %></td><td><%= c.orden %></td>
+        <td><form method="post" action="/admin/clientes/<%= c.id %>/eliminar"><button class="btn btn-sec btn-chico">Quitar</button></form></td></tr>
+    <% }) %>
+  </tbody></table>
+</div>
+<%- include('_pie') %>

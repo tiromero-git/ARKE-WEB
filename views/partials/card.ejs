@@ -1,0 +1,17 @@
+<%# Tarjeta de producto. Recibe: p (producto) %>
+<article class="card">
+  <a href="<%= urlProducto(p) %>" class="card-img" aria-label="<%= p.nombre %>">
+    <% if (p.imagen) { %>
+      <img class="principal" src="<%= p.imagen %>" alt="<%= p.nombre %>" loading="lazy">
+      <% if (p.imagen2) { %><img class="alt" src="<%= p.imagen2 %>" alt="" loading="lazy" aria-hidden="true"><% } %>
+    <% } else { %>
+      <span class="sin-img">Sin imagen</span>
+    <% } %>
+  </a>
+  <div class="card-body">
+    <a href="<%= urlProducto(p) %>" class="card-nombre"><%= p.nombre %></a>
+    <% if (cfg.mostrar_precios === '1' && p.precio > 0) { %><div class="card-precio"><%= fmt.precio(p.precio) %></div><% } %>
+    <% if (cfg.mostrar_stock === '1') { %><div class="card-meta">Stock: <%= Number(p.stock).toLocaleString('es-AR') %><% if (p.cantidad_minima > 1) { %> · Mín. <%= p.cantidad_minima %> u.<% } %></div><% } %>
+    <a class="btn btn-borde" href="<%= urlProducto(p) %>">Ver producto</a>
+  </div>
+</article>

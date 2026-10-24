@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title><%= typeof tituloAdmin !== 'undefined' ? tituloAdmin + ' · ' : '' %>Panel ARKE</title>
+  <link rel="icon" href="/img/favicon.png">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<% if (usuario) { %>
+<div class="adm">
+  <aside class="adm-side">
+    <a href="/admin"><img src="/img/logo.webp" alt="ARKE"></a>
+    <nav>
+      <a href="/admin" class="<%= rutaActual === '/' ? 'activo' : '' %>">📊 Inicio</a>
+      <a href="/admin/productos" class="<%= rutaActual.startsWith('/productos') ? 'activo' : '' %>">📦 Productos</a>
+      <a href="/admin/categorias" class="<%= rutaActual.startsWith('/categorias') ? 'activo' : '' %>">🗂️ Categorías</a>
+      <a href="/admin/precios" class="<%= rutaActual.startsWith('/precios') ? 'activo' : '' %>">💲 Precios masivos</a>
+      <a href="/admin/mensajes" class="<%= rutaActual.startsWith('/mensajes') ? 'activo' : '' %>">✉️ Mensajes</a>
+      <a href="/admin/clientes" class="<%= rutaActual.startsWith('/clientes') ? 'activo' : '' %>">🤝 Clientes</a>
+      <a href="/admin/configuracion" class="<%= rutaActual.startsWith('/configuracion') ? 'activo' : '' %>">⚙️ Configuración</a>
+      <a href="/" target="_blank">🌐 Ver sitio</a>
+    </nav>
+    <form method="post" action="/admin/logout"><button class="link-btn">Cerrar sesión (<%= usuario.email %>)</button></form>
+  </aside>
+  <main class="adm-main">
+    <% if (flash) { %><div class="flash <%= flash.tipo === 'error' ? 'error' : '' %>"><%= flash.texto %></div><% } %>
+<% } %>

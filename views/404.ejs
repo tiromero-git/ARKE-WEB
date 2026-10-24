@@ -1,0 +1,9 @@
+<%- include('partials/cabecera') %>
+<section class="hero-simple" style="padding:80px 0">
+  <div class="contenedor">
+    <h1><%= titulo %></h1>
+    <p><%= typeof error !== 'undefined' && error ? 'Probá de nuevo en un momento.' : 'La página que buscás no existe o se movió.' %></p>
+    <div class="centrado"><a class="btn" href="/productos">Ver productos</a></div>
+  </div>
+</section>
+<%- include('partials/pie') %>

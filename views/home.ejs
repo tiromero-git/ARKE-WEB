@@ -1,0 +1,97 @@
+<%- include('partials/cabecera') %>
+
+<%# ── Slider principal (mismos textos que el sitio actual) ── %>
+<section class="banner" data-slider aria-label="Destacados">
+  <%
+    const slides = [
+      { tag: 'Productos personalizados', t1: 'No es un regalo', t2: 'es estrategia', sub: 'Potenciá tu marca con productos que hablan de vos.', btn: 'Contactanos', href: '/whatsapp' },
+      { tag: 'Para tu empresa', t1: 'Tu marca', t2: 'en productos', sub: 'Impresioná a clientes y equipos con productos únicos.', btn: 'Ver productos', href: '/productos' },
+      { tag: 'Creá con nosotros', t1: 'Tu idea', t2: 'hecha realidad', sub: 'Desarrollamos productos desde cero para tu marca.', btn: 'Hablá con un asesor', href: '/whatsapp?texto=' + encodeURIComponent('¡Hola ARKE! Quiero desarrollar un producto para mi marca.') },
+    ];
+    const iconos = [
+      '<path d="M8 3h8l-1 5a6 6 0 0 1-3 10 6 6 0 0 1-3-10z"/><path d="M12 18v3M8 21h8"/>',
+      '<rect x="4" y="7" width="16" height="13" rx="2"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/>',
+      '<path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 7v5l3 3"/>',
+      '<path d="M4 7h16l-1 13H5z"/><path d="M9 7a3 3 0 0 1 6 0"/>',
+      '<path d="M4 19c4-1 6-4 6-8V4l5 3v4c0 4 2 7 5 8"/>',
+      '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/>',
+    ];
+  %>
+  <% slides.forEach(function (s, i) { %>
+    <div class="slide <%= i === 0 ? 'activo' : '' %>" data-slide>
+      <div class="slide-contenido">
+        <span class="tag"><%= s.tag %></span>
+        <<%= i === 0 ? 'h1' : 'h2' %>><%= s.t1 %> <span><%= s.t2 %></span></<%= i === 0 ? 'h1' : 'h2' %>>
+        <p><%= s.sub %></p>
+        <a class="btn" href="<%= s.href %>" <%= s.href.startsWith('/whatsapp') ? 'target=_blank rel=noopener' : '' %>><%= s.btn %></a>
+      </div>
+      <div class="slide-visual" aria-hidden="true">
+        <div class="grilla-iconos">
+          <% iconos.forEach(function (svg, j) { %>
+            <div class="<%= (j + i) % 3 === 0 ? 'acento' : (j + i) % 3 === 1 ? 'claro' : '' %>"><svg viewBox="0 0 24 24"><%- svg %></svg></div>
+          <% }) %>
+        </div>
+      </div>
+    </div>
+  <% }) %>
+  <button class="flecha izq" data-prev aria-label="Anterior">←</button>
+  <button class="flecha der" data-next aria-label="Siguiente">→</button>
+  <div class="puntos" data-puntos></div>
+</section>
+
+<%# ── Categorías destacadas ── %>
+<section class="seccion">
+  <div class="contenedor">
+    <div class="titulo-seccion"><h2>Categorías destacadas</h2><span class="linea"></span></div>
+    <div class="cats-grid">
+      <% categoriasDestacadas.forEach(function (c) { %>
+        <a class="cat-item" href="<%= c.url %>">
+          <div class="cat-thumb">
+            <% if (c.imagen) { %><img src="<%= c.imagen %>" alt="<%= c.nombre %>" loading="lazy"><% } %>
+            <div class="cat-overlay"><span>Ver categoría</span></div>
+          </div>
+          <div class="cat-nombre"><%= c.nombre %></div>
+        </a>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<%# ── Cómo trabajamos ── %>
+<section class="seccion crema">
+  <div class="contenedor">
+    <div class="titulo-seccion"><h2>Cómo trabajamos</h2><span class="linea"></span></div>
+    <p style="margin-top:-14px;margin-bottom:24px;color:var(--texto-suave)">De la idea al impacto.</p>
+    <div class="pasos">
+      <div class="paso"><div class="num">01</div><h3>Elegí</h3><p>Explorá el catálogo y marcá tus favoritos. Si tenés dudas te ayudamos por WhatsApp.</p></div>
+      <div class="paso"><div class="num">02</div><h3>Diseñamos</h3><p>Envianos tu logo y armamos una propuesta personalizada con mockups, info y valores.</p></div>
+      <div class="paso"><div class="num">03</div><h3>Producción</h3><p>Con tu aprobación enviamos a producción y coordinamos tiempos de entrega.</p></div>
+      <div class="paso"><div class="num">04</div><h3>Entrega</h3><p>Retirás sin cargo en nuestro espacio o enviamos a cualquier punto del país.</p></div>
+    </div>
+    <div class="centrado"><a class="link-flecha" href="/proceso-de-compra">Ver proceso completo →</a></div>
+  </div>
+</section>
+
+<%# ── Productos destacados ── %>
+<section class="seccion">
+  <div class="contenedor">
+    <div class="titulo-seccion"><h2>Destacados</h2><span class="linea"></span></div>
+    <div class="grilla-productos">
+      <% destacados.forEach(function (p) { %><%- include('partials/card', { p }) %><% }) %>
+    </div>
+    <div class="centrado"><a class="btn" href="/productos">Ver más productos</a></div>
+  </div>
+</section>
+
+<% if (clientes.length) { %>
+<section class="seccion crema">
+  <div class="contenedor">
+    <div class="titulo-seccion"><h2>Nuestros clientes</h2><span class="linea"></span></div>
+    <div class="clientes">
+      <% clientes.forEach(function (c) { %><img src="<%= c.logo %>" alt="<%= c.nombre %>" title="<%= c.nombre %>" loading="lazy"><% }) %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<%- include('partials/pie') %>

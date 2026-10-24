@@ -1,0 +1,12 @@
+<%- include('_cabecera') %>
+<form class="login" method="post" action="/admin/setup">
+  <img src="/img/logo.webp" alt="ARKE">
+  <h1 style="font-size:20px;text-align:center;margin:0">Crear usuario administrador</h1>
+  <p class="ayuda" style="text-align:center;margin:0">Esto aparece una sola vez, cuando todavía no hay ningún usuario.</p>
+  <% if (error) { %><div class="flash error"><%= error %></div><% } %>
+  <label>Nombre<input name="nombre"></label>
+  <label>Email<input type="email" name="email" required></label>
+  <label>Contraseña <span class="ayuda">(mínimo 8 caracteres)</span><input type="password" name="password" minlength="8" required></label>
+  <button class="btn" type="submit">Crear y entrar</button>
+</form>
+<%- include('_pie') %>

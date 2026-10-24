@@ -1,0 +1,102 @@
+<%- include('partials/cabecera') %>
+<%
+  const r = resultado;
+  const f = r.filtros;
+  // Arma una URL conservando los filtros actuales y cambiando algunos
+  function url(cambios) {
+    const p = new URLSearchParams();
+    const base = { q: f.q, min: f.precioMin, max: f.precioMax, stock: f.stockMin, orden: f.orden !== 'vistos' ? f.orden : null, pagina: null };
+    const todo = Object.assign(base, cambios);
+    for (const k in todo) if (todo[k] !== null && todo[k] !== undefined && todo[k] !== '') p.set(k, todo[k]);
+    const s = p.toString();
+    return baseUrl + (s ? '?' + s : '');
+  }
+  const qs = (u) => { const i = u.indexOf('?'); return i >= 0 ? u.slice(i) : ''; };
+%>
+<div class="contenedor">
+  <nav class="migas" aria-label="Ubicación">
+    <a href="/">Home</a><span>›</span><a href="/productos">Productos</a>
+    <% if (categoria && categoria.padre) { %><span>›</span><a href="<%= urlCategoria(categoria.padre) %>"><%= categoria.padre.nombre %></a><% } %>
+    <% if (categoria) { %><span>›</span><%= categoria.nombre %><% } %>
+  </nav>
+
+  <div class="layout-listado">
+    <aside class="filtros" data-filtros>
+      <h3>Categorías</h3>
+      <ul>
+        <li><a href="/productos<%= qs(url({})) %>" class="<%= !categoria ? 'activo' : '' %>">Todas</a></li>
+        <% categoriasMenu.forEach(function (c) {
+             const abierta = categoria && (categoria.id === c.id || categoria.padre_id === c.id); %>
+          <li>
+            <a href="<%= urlCategoria(c) %><%= qs(url({})) %>" class="<%= categoria && categoria.id === c.id ? 'activo' : '' %>"><%= c.nombre %> <small><%= c.total %></small></a>
+            <% if (abierta && c.hijas.length) { %>
+              <ul>
+                <% c.hijas.forEach(function (h) { %>
+                  <li><a href="<%= urlCategoria(h, c) %><%= qs(url({})) %>" class="<%= categoria.id === h.id ? 'activo' : '' %>"><%= h.nombre %> <small><%= h.total %></small></a></li>
+                <% }) %>
+              </ul>
+            <% } %>
+          </li>
+        <% }) %>
+      </ul>
+
+      <form method="get" action="<%= baseUrl %>">
+        <% if (f.q) { %><input type="hidden" name="q" value="<%= f.q %>"><% } %>
+        <% if (f.orden !== 'vistos') { %><input type="hidden" name="orden" value="<%= f.orden %>"><% } %>
+        <h3>Precio</h3>
+        <div class="fila">
+          <input class="campo" type="number" name="min" min="0" step="1" placeholder="Mín" value="<%= f.precioMin ?? '' %>" aria-label="Precio mínimo">
+          <input class="campo" type="number" name="max" min="0" step="1" placeholder="Máx" value="<%= f.precioMax ?? '' %>" aria-label="Precio máximo">
+        </div>
+        <h3>Stock mayor a</h3>
+        <input class="campo" type="number" name="stock" min="0" step="1" placeholder="Ej: 100" value="<%= f.stockMin ?? '' %>" aria-label="Stock mínimo">
+        <div style="margin-top:16px;display:grid;gap:8px">
+          <button class="btn btn-bloque" type="submit">Filtrar</button>
+          <a class="link-flecha" style="text-align:center" href="<%= baseUrl %>">Limpiar filtros</a>
+        </div>
+      </form>
+    </aside>
+
+    <section>
+      <div class="cabecera-listado">
+        <div>
+          <h1><%= titulo %></h1>
+          <div class="total"><%= r.total.toLocaleString('es-AR') %> productos</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn btn-borde btn-filtros" type="button" data-toggle-filtros>Filtros</button>
+          <select class="campo" aria-label="Ordenar" data-orden>
+            <% [['vistos','Más vistos'],['menor','Menor precio'],['mayor','Mayor precio'],['az','A - Z'],['za','Z - A'],['nuevos','Más nuevos']].forEach(function (o) { %>
+              <option value="<%= url({ orden: o[0] === 'vistos' ? null : o[0] }) %>" <%= f.orden === o[0] ? 'selected' : '' %>><%= o[1] %></option>
+            <% }) %>
+          </select>
+        </div>
+      </div>
+
+      <% if (!r.items.length) { %>
+        <div class="vacio">
+          <p>No encontramos productos con esos filtros.</p>
+          <a class="btn btn-wpp" href="/whatsapp?texto=<%= encodeURIComponent('¡Hola ARKE! Estoy buscando ' + (f.q || 'un producto') + ', ¿me ayudan?') %>" target="_blank" rel="noopener">Consultanos por WhatsApp</a>
+        </div>
+      <% } else { %>
+        <div class="grilla-productos">
+          <% r.items.forEach(function (p) { %><%- include('partials/card', { p }) %><% }) %>
+        </div>
+      <% } %>
+
+      <% if (r.paginas > 1) {
+           const desde = Math.max(1, r.pagina - 2), hasta = Math.min(r.paginas, r.pagina + 2); %>
+        <nav class="paginacion" aria-label="Páginas">
+          <% if (r.pagina > 1) { %><a href="<%= url({ pagina: r.pagina - 1 }) %>" aria-label="Anterior">‹</a><% } %>
+          <% if (desde > 1) { %><a href="<%= url({}) %>">1</a><% if (desde > 2) { %><span>…</span><% } %><% } %>
+          <% for (let i = desde; i <= hasta; i++) { %>
+            <% if (i === r.pagina) { %><span class="actual"><%= i %></span><% } else { %><a href="<%= url({ pagina: i > 1 ? i : null }) %>"><%= i %></a><% } %>
+          <% } %>
+          <% if (hasta < r.paginas) { %><% if (hasta < r.paginas - 1) { %><span>…</span><% } %><a href="<%= url({ pagina: r.paginas }) %>"><%= r.paginas %></a><% } %>
+          <% if (r.pagina < r.paginas) { %><a href="<%= url({ pagina: r.pagina + 1 }) %>" aria-label="Siguiente">›</a><% } %>
+        </nav>
+      <% } %>
+    </section>
+  </div>
+</div>
+<%- include('partials/pie') %>

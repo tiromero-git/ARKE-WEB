@@ -1,0 +1,54 @@
+<%- include('_cabecera', { tituloAdmin: 'Categorías' }) %>
+<h1>Categorías</h1>
+
+<div class="panel">
+  <h2 style="font-size:16px;margin-top:0">Nueva categoría</h2>
+  <form method="post" action="/admin/categorias/guardar" class="form-grid">
+    <label>Nombre *<input name="nombre" required></label>
+    <label>Dentro de (opcional)
+      <select name="padre_id"><option value="">— Categoría principal —</option>
+        <% arbol.forEach(function (c) { %><option value="<%= c.id %>"><%= c.nombre %></option><% }) %>
+      </select>
+    </label>
+    <label>Orden<input type="number" name="orden" value="0"></label>
+    <label>Imagen (URL o /img/...)<input name="imagen"></label>
+    <label class="check"><input type="checkbox" name="destacada" value="1"> Destacada en la home</label>
+    <div><button class="btn">Agregar</button></div>
+  </form>
+</div>
+
+<div class="panel tabla-scroll">
+  <table>
+    <thead><tr><th>Nombre</th><th>Dentro de</th><th class="num">Productos</th><th>Orden</th><th>Imagen</th><th>Home</th><th></th></tr></thead>
+    <tbody>
+    <% function fila(c, padre) { %>
+      <% const f = 'cat-' + c.id; /* cada fila es un formulario (atributo form="...") */ %>
+      <tr>
+        <td><%= padre ? '↳ ' : '' %><input form="<%= f %>" name="nombre" value="<%= c.nombre %>" style="<%= padre ? 'width:88%' : '' %>"></td>
+        <td><%= padre ? padre.nombre : '—' %></td>
+        <td class="num"><%= c.total %></td>
+        <td><input form="<%= f %>" type="number" name="orden" value="<%= c.orden %>" style="width:70px"></td>
+        <td><input form="<%= f %>" name="imagen" value="<%= c.imagen || '' %>" placeholder="(automática)"></td>
+        <td><input form="<%= f %>" type="checkbox" name="destacada" value="1" <%= c.destacada ? 'checked' : '' %>></td>
+        <td class="acciones">
+          <form id="<%= f %>" method="post" action="/admin/categorias/guardar">
+            <input type="hidden" name="id" value="<%= c.id %>">
+            <input type="hidden" name="padre_id" value="<%= c.padre_id || '' %>">
+            <button class="btn btn-sec btn-chico">Guardar</button>
+          </form>
+          <a class="btn btn-sec btn-chico" href="<%= urlCategoria(c, padre) %>" target="_blank">Ver</a>
+        </td>
+      </tr>
+    <% } %>
+    <% arbol.forEach(function (c) { fila(c, null); c.hijas.forEach(function (h) { fila(h, c); }); }); %>
+    </tbody>
+  </table>
+  <p class="ayuda">Para borrar una categoría: los productos no se borran, solo dejan de estar en ella.</p>
+  <form method="post" onsubmit="this.action='/admin/categorias/'+this.cat.value+'/eliminar'; return confirm('¿Eliminar la categoría?')" class="acciones">
+    <select name="cat" style="width:auto">
+      <% todas.forEach(function (c) { %><option value="<%= c.id %>"><%= c.nombre %></option><% }) %>
+    </select>
+    <button class="btn btn-peligro btn-chico">Eliminar categoría</button>
+  </form>
+</div>
+<%- include('_pie') %>

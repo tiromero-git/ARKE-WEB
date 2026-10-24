@@ -1,0 +1,45 @@
+<%- include('partials/cabecera') %>
+<section class="hero-simple">
+  <div class="contenedor">
+    <span class="tag">Tu merch, paso a paso</span>
+    <h1>Proceso de compra</h1>
+    <p>Cómo comprar en Arke, de la idea a la entrega.</p>
+  </div>
+</section>
+
+<section class="seccion">
+  <div class="contenedor">
+    <div class="timeline">
+      <%
+        const pasos = [
+          ['Elegí tu producto y variante', 'Seleccioná colores, cantidades y modelos según lo que tengas en mente. Explorá el catálogo completo y filtrá por categoría. Si necesitás orientación o tenés dudas sobre qué producto se adapta mejor a tu proyecto, escribinos por WhatsApp y te ayudamos a elegir.'],
+          ['Consultanos por WhatsApp', 'Desde cada producto podés tocar "Consultar por WhatsApp": el mensaje ya sale con el producto, el color y la cantidad. Te asesoramos para armar tu pedido a medida, con las cantidades y variantes que mejor se ajusten a tu necesidad.'],
+          ['Presupuesto detallado', 'Te enviamos un presupuesto claro y detallado en base al producto elegido y las cantidades deseadas. Sin costos ocultos ni sorpresas al final. Si querés comparar opciones o ajustar cantidades, lo resolvemos juntos antes de avanzar.'],
+          ['Envío de logos y material de marca', 'Una vez confirmado el pedido, te pedimos los logos. Necesitamos archivos en formato editable: .ai, .pdf editable o .svg para garantizar la mejor calidad de impresión. ¿No tenés ese archivo o tu logo solo existe en baja resolución? En Arke te ayudamos a resolverlo.'],
+          ['Mockups y confirmación final', 'Te enviamos mockups digitales para que puedas ver exactamente cómo va a quedar tu merch antes de producirlo. Podés pedir ajustes de posición, tamaño o color hasta quedar conforme. Con tu aprobación por escrito, iniciamos la producción.'],
+          ['Pago y producción', 'Una vez aprobado el mockup, coordinamos el pago y tu pedido entra en producción. El tiempo estimado es de 10 días hábiles en promedio, aunque puede variar según la técnica y el volumen. Te mantenemos informado durante el proceso.'],
+          ['Entrega o envío', 'Cuando tu pedido esté listo, coordinamos la entrega. Podés retirarlo sin cargo en nuestro espacio, o enviarlo a cualquier punto del país. El costo de envío corre por cuenta del cliente y te lo informamos antes de despachar.'],
+        ];
+      %>
+      <% pasos.forEach(function (paso, i) { %>
+        <div class="item"><div class="num"><%= i + 1 %></div><div><h3><%= paso[0] %></h3><p><%= paso[1] %></p></div></div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<section class="seccion crema">
+  <div class="contenedor">
+    <div class="titulo-seccion"><h2>Preguntas frecuentes</h2><span class="linea"></span></div>
+    <div class="faq">
+      <div class="box"><h3>Medios de pago</h3><ul><li>Transferencia bancaria</li><li>Depósito bancario</li></ul></div>
+      <div class="box"><h3>Tiempo de producción</h3><ul><li>Varía según técnica y volumen del pedido</li><li>Promedio: 10 días hábiles desde la aprobación</li><li>Pedidos urgentes: consultanos disponibilidad</li></ul><p class="nota">¿Tenés una fecha límite? Avisanos y buscamos una solución.</p></div>
+      <div class="box"><h3>Entregas y envíos</h3><ul><li>Retiro sin cargo en nuestro espacio</li><li>Envíos a todo el país vía correo o moto</li><li>Costo de envío a cargo del cliente</li><li>Te informamos el costo antes de despachar</li></ul></div>
+      <div class="box"><h3>Archivos y logos</h3><ul><li>Formatos aceptados: .ai, .pdf editable, .svg</li><li>Si no tenés el archivo, te ayudamos a resolverlo</li><li>No aceptamos .jpg o .png de baja resolución</li></ul><p class="nota">¿Dudas sobre tu archivo? Escribinos antes de empezar.</p></div>
+      <div class="box"><h3>Cantidades mínimas</h3><ul><li>Varían según el producto y la técnica</li><li>Consultanos por cantidades pequeñas o muestras</li><li>Mayor cantidad = mejor precio unitario</li></ul></div>
+      <div class="box"><h3>Cambios y revisiones</h3><ul><li>Podés pedir ajustes en la etapa de mockup</li><li>Una vez aprobada la producción, no se admiten cambios</li><li>Revisá bien los mockups antes de confirmar</li></ul></div>
+    </div>
+    <div class="centrado"><a class="btn btn-wpp" href="/whatsapp" target="_blank" rel="noopener">Consultá por WhatsApp</a></div>
+  </div>
+</section>
+<%- include('partials/pie') %>

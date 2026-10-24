@@ -1,0 +1,28 @@
+<%- include('partials/cabecera') %>
+<section class="hero-simple">
+  <div class="contenedor"><h1>Contactanos</h1><p>Escribinos y un asesor te responde a la brevedad.</p></div>
+</section>
+<div class="contenedor">
+  <div class="contacto-grid">
+    <div class="contacto-datos">
+      <h2 style="font-size:20px">Hablemos</h2>
+      <p style="color:var(--texto-suave)">La forma más rápida es WhatsApp. También podés dejarnos tu consulta en el formulario.</p>
+      <a class="dato" href="https://wa.me/<%= cfg.whatsapp %>" target="_blank" rel="noopener"><span class="icono"><svg><use href="#i-wpp"/></svg></span><span><strong>WhatsApp</strong><br>+<%= cfg.whatsapp %></span></a>
+      <a class="dato" href="tel:<%= cfg.telefono %>"><span class="icono"><svg><use href="#i-tel"/></svg></span><span><strong>Teléfono</strong><br><%= cfg.telefono %></span></a>
+      <a class="dato" href="mailto:<%= cfg.email %>"><span class="icono"><svg><use href="#i-mail"/></svg></span><span><strong>Email</strong><br><%= cfg.email %></span></a>
+      <% if (cfg.instagram) { %><a class="dato" href="<%= cfg.instagram %>" target="_blank" rel="noopener"><span class="icono"><svg><use href="#i-ig"/></svg></span><span><strong>Instagram</strong><br>@arke.agency</span></a><% } %>
+    </div>
+
+    <form class="form" method="post" action="/contacto" novalidate>
+      <% if (enviado) { %><div class="alerta ok">¡Gracias! Recibimos tu mensaje y te vamos a contactar pronto.</div><% } %>
+      <% if (errores.length) { %><div class="alerta error"><%= errores.join(' ') %></div><% } %>
+      <label>Nombre *<input class="campo" name="nombre" required maxlength="120" value="<%= datos.nombre || '' %>"></label>
+      <label>Email *<input class="campo" type="email" name="email" required maxlength="160" value="<%= datos.email || '' %>"></label>
+      <label>Celular<input class="campo" type="tel" name="celular" maxlength="40" value="<%= datos.celular || '' %>"></label>
+      <label>Mensaje<textarea class="campo" name="mensaje" maxlength="3000"><%= datos.mensaje || '' %></textarea></label>
+      <label class="oculto" aria-hidden="true">No completar<input name="website" tabindex="-1" autocomplete="off"></label>
+      <button class="btn" type="submit">Enviar</button>
+    </form>
+  </div>
+</div>
+<%- include('partials/pie') %>

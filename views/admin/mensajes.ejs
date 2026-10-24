@@ -1,0 +1,18 @@
+<%- include('_cabecera', { tituloAdmin: 'Mensajes' }) %>
+<h1>Mensajes del formulario de contacto</h1>
+<% if (!mensajes.length) { %><div class="panel">Todavía no hay mensajes.</div><% } %>
+<% mensajes.forEach(function (m) { %>
+  <div class="panel" style="<%= m.leido ? 'opacity:.65' : 'border-left:4px solid var(--oliva)' %>">
+    <div class="acciones" style="justify-content:space-between">
+      <div><b><%= m.nombre %></b> · <a href="mailto:<%= m.email %>"><%= m.email %></a>
+        <% if (m.celular) { %> · <a href="https://wa.me/<%= m.celular.replace(/\D/g, '') %>" target="_blank"><%= m.celular %></a><% } %>
+        <span class="ayuda"> · <%= m.creado_en %> (UTC)</span></div>
+      <div class="acciones">
+        <% if (!m.leido) { %><form method="post" action="/admin/mensajes/<%= m.id %>/leido"><button class="btn btn-sec btn-chico">Marcar leído</button></form><% } %>
+        <form method="post" action="/admin/mensajes/<%= m.id %>/eliminar" onsubmit="return confirm('¿Eliminar mensaje?')"><button class="btn btn-sec btn-chico">Eliminar</button></form>
+      </div>
+    </div>
+    <p style="white-space:pre-wrap;margin:10px 0 0"><%= m.mensaje %></p>
+  </div>
+<% }) %>
+<%- include('_pie') %>
